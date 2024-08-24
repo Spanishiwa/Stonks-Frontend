@@ -23,6 +23,7 @@
 body {
   @apply bg-primary;
   @apply text-primary;
+  @apply caret-primary;
 }
 
 @layer utilities {
