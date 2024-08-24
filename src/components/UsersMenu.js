@@ -1,5 +1,6 @@
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
+
+import InputMenuItem from '/src/components/InputMenuItem';
 
 const users = [
   {
@@ -52,28 +53,19 @@ const users = [
   },
 ];
 
-export const UsersMenu = ({ insertUsername, isOpen }) => {
+const UsersMenu = ({ insertUsername }) => {
   return (
-    <div
-      className={twMerge(
-        'absolute top-[-170px] max-h-[170px] w-full max-w-[calc(100%-16px-46px)] flex-col overflow-auto rounded border border-solid border-primary bg-secondary p-2',
-        isOpen ? 'flex' : 'hidden',
-      )}
-    >
+    <>
       {users &&
         users.map(({ id, username }) => {
           return (
-            <button
-              className="flex py-1"
-              key={id}
-              type="button"
-              value={username}
-              onClick={() => insertUsername(username)}
-            >
+            <InputMenuItem key={id} onClick={() => insertUsername(username)}>
               {username}
-            </button>
+            </InputMenuItem>
           );
         })}
-    </div>
+    </>
   );
 };
+
+export default UsersMenu;

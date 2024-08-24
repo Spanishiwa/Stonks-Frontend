@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { UsersMenu } from './UsersMenu';
+import CommandsMenu from '/src/components/CommandsMenu';
+import InputMenu from '/src/components/InputMenu';
+import UsersMenu from '/src/components/UsersMenu';
 
 const messages = [
   {
@@ -91,13 +93,35 @@ const ChatMessage = ({ color, text, username }) => {
 const TwitchChat = () => {
   const [chatInput, setChatInput] = useState('');
   const [chatMessages, setChatMessages] = useState(() => messages);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isUsersMenuOpen, setIsUsersMenuOpen] = useState(false);
+  const [isCommandsMenuOpen, setIsCommandsMenuOpen] = useState(false);
+
+  const handleCloseCommandsMenu = () => {
+    setIsCommandsMenuOpen(() => false);
+  };
 
   const handleChange = (e) => {
     setChatInput(() => e.target.value);
 
-    if (e.target.value.includes('@')) {
-      setIsOpen(() => true);
+    const shouldShowCommands =
+      e.target.value.length === 1 && e.target.value.includes('/');
+
+    const shouldShowUsers = e.target.value?.slice(-1)?.includes('@');
+
+    if (shouldShowUsers) {
+      setIsUsersMenuOpen(() => true);
+    }
+
+    if (isUsersMenuOpen && e.target.value.length === 0) {
+      setIsUsersMenuOpen(() => false);
+    }
+
+    if (shouldShowCommands) {
+      setIsCommandsMenuOpen(() => true);
+    }
+
+    if (isCommandsMenuOpen && e.target.value.length === 0) {
+      handleCloseCommandsMenu();
     }
   };
 
@@ -109,7 +133,13 @@ const TwitchChat = () => {
 
   const insertUsername = (username) => {
     setChatInput((prev) => prev + username);
-    setIsOpen(() => false);
+    setIsUsersMenuOpen(() => false);
+  };
+
+  const resetChat = () => {
+    setIsUsersMenuOpen(() => false);
+    handleCloseCommandsMenu();
+    setChatInput(() => '');
   };
 
   const insertChat = () => {
@@ -122,9 +152,8 @@ const TwitchChat = () => {
       };
 
       setChatMessages((prev) => [...prev, newChatMessage]);
-      setChatInput(() => '');
 
-      if (isOpen) setIsOpen(() => false);
+      resetChat();
     }
   };
 
@@ -150,7 +179,12 @@ const TwitchChat = () => {
           })}
       </div>
       <div className="relative flex h-[90px] flex-col px-2 pb-2">
-        <UsersMenu insertUsername={insertUsername} isOpen={isOpen} />
+        <InputMenu isOpen={isCommandsMenuOpen || isUsersMenuOpen}>
+          {isCommandsMenuOpen && (
+            <CommandsMenu onClick={handleCloseCommandsMenu} />
+          )}
+          {isUsersMenuOpen && <UsersMenu insertUsername={insertUsername} />}
+        </InputMenu>
         <div className="flex h-[40px] items-center rounded border border-solid border-primary bg-secondary px-2">
           <input
             className="bg-transparent max-h-[40px] flex-auto py-2 outline-none"
