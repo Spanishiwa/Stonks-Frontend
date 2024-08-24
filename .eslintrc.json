@@ -32,12 +32,7 @@
       { "blankLine": "always", "prev": "function", "next": "*" },
       { "blankLine": "always", "prev": "*", "next": "function" }
     ],
-    "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "auto"
-      }
-    ],
+    "prettier/prettier": "off",
     "react/jsx-sort-props": [
       2,
       {
